@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateTodoDto } from './dto/create-todo.dto';
 import { UpdateTodoDto } from './dto/update-todo.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Todo } from 'src/schemas/todo.schema';
 import { Model } from 'mongoose';
+
 @Injectable()
 export class TodosService {
   constructor(@InjectModel(Todo.name) private todoModel: Model<Todo>) {}
@@ -12,19 +13,40 @@ export class TodosService {
     return await new this.todoModel(createTodoDto).save();
   }
 
-  findAll() {
-    return `This action returns all todos`;
+  async findAll() {
+    return await this.todoModel.find().select('-__v');
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} todo`;
+  async findOne(id: string) {
+    const todo = await this.todoModel.findById(id).select('-__v');
+    if (!todo) {
+      throw new NotFoundException('This id does not exist.');
+    }
+    return todo;
   }
 
-  update(id: number, updateTodoDto: UpdateTodoDto) {
-    return `This action updates a #${id} todo`;
+  async update(id: string, updateTodoDto: UpdateTodoDto) {
+    const todo = await this.todoModel
+      .findByIdAndUpdate(id, updateTodoDto, {
+        new: true,
+      })
+      .select('-__v');
+
+    if (!todo) {
+      throw new NotFoundException('This id does not exist.');
+    }
+    return todo;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} todo`;
+  async remove(id: string) {
+    try {
+      const todo = await this.todoModel.deleteOne({ _id: id });
+      if (todo.deletedCount === 0) {
+        throw new NotFoundException('This id does not exist.');
+      }
+      return todo;
+    } catch (err) {
+      throw new NotFoundException('This id does not exist.');
+    }
   }
 }
