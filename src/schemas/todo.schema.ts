@@ -15,7 +15,7 @@ export class Todo {
   @Prop({ required: true, enum: ['not started', 'in progress', 'complete'] })
   status: 'not started' | 'in progress' | 'complete';
 
-  @Prop({ type: [{ type: Types.ObjectId, ref: 'User' }] })
+  @Prop({ type: Types.ObjectId, ref: 'User' })
   userId: User;
 }
 

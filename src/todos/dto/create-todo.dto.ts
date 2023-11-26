@@ -13,4 +13,6 @@ export class CreateTodoDto {
   @IsString()
   @IsIn(['not started', 'in progress', 'complete'])
   status: 'not started' | 'in progress' | 'complete';
+
+  userId: string;
 }

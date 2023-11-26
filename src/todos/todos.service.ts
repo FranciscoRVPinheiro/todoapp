@@ -8,12 +8,15 @@ import { Model } from 'mongoose';
 export class TodosService {
   constructor(@InjectModel(Todo.name) private todoModel: Model<Todo>) {}
 
-  async create(createTodoDto: CreateTodoDto) {
+  async create(createTodoDto: CreateTodoDto, req: any): Promise<Todo> {
+    createTodoDto.userId = req.user.sub;
     return await new this.todoModel(createTodoDto).save();
   }
 
-  async findAll() {
-    return await this.todoModel.find().select('-__v');
+  async findAll(req: any): Promise<Todo[]> {
+    return await this.todoModel
+      .find({ userId: req.user.sub })
+      .select('-__v -userId');
   }
 
   async findOne(id: string) {
