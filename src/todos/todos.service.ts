@@ -16,11 +16,16 @@ export class TodosService {
   async findAll(req: any): Promise<Todo[]> {
     return await this.todoModel
       .find({ userId: req.user.sub })
-      .select('-__v -userId');
+      // .select('-__v -userId');
+      .select('-__v');
   }
 
-  async findOne(id: string) {
+  async findOne(id: string, req: any) {
+    // find all the users todos
+    const allUserTodos = await this.findAll(req);
+
     const todo = await this.todoModel.findById(id).select('-__v');
+
     if (!todo) {
       throw new NotFoundException('This id does not exist.');
     }

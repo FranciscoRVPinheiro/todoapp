@@ -30,8 +30,8 @@ export class TodosController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.todosService.findOne(id);
+  findOne(@Param('id') id: string, @Request() req) {
+    return this.todosService.findOne(id, req);
   }
 
   @Patch(':id')
