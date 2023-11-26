@@ -26,11 +26,11 @@ export class UsersService {
     return await this.userModel.findOne({ _id: id }).select('-password -__v');
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
+  update(id: string, updateUserDto: UpdateUserDto) {
     return `This action updates a #${id} user`;
   }
 
-  remove(id: number) {
+  remove(id: string) {
     return `This action removes a #${id} user`;
   }
 }
