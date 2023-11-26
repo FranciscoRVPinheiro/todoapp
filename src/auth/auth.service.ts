@@ -6,10 +6,14 @@ import {
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { UsersService } from '../users/users.service';
 import * as bcrypt from 'bcrypt';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
-  constructor(private usersService: UsersService) {}
+  constructor(
+    private usersService: UsersService,
+    private jwtService: JwtService,
+  ) {}
 
   async register(createUserDto: CreateUserDto) {
     const user = await this.usersService.findByEmail(createUserDto.email);
@@ -45,11 +49,11 @@ export class AuthService {
       throw new UnauthorizedException();
     }
 
-    // jwt
+    const payload = { sub: user.id, email: user.email };
     return {
       id: user.id,
-      email: user.email,
-      message: 'Logged in successfully',
+      message: 'success',
+      access_token: await this.jwtService.signAsync(payload),
     };
   }
 }
