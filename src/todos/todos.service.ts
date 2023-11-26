@@ -21,12 +21,13 @@ export class TodosService {
   }
 
   async findOne(id: string, req: any) {
-    // find all the users todos
-    const allUserTodos = await this.findAll(req);
-
     const todo = await this.todoModel.findById(id).select('-__v');
 
     if (!todo) {
+      throw new NotFoundException();
+    }
+
+    if (todo.userId !== req.user.sub) {
       throw new NotFoundException('This id does not exist.');
     }
     return todo;
