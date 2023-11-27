@@ -34,7 +34,7 @@ export class UsersController {
 
   @UseGuards(AuthGuard)
   @Get('/profile')
-  async getProfile(@Request() req) {
+  async getProfile(@Request() req: any) {
     return await req.user;
   }
 
@@ -43,19 +43,25 @@ export class UsersController {
     // Only admins should be able to see it
     return this.usersService.findAll();
   }
-
+  @UseGuards(AuthGuard)
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(id);
+  findOne(@Param('id') id: string, @Request() req: Request) {
+    return this.usersService.findOne(id, req);
   }
 
+  @UseGuards(AuthGuard)
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(id, updateUserDto);
+  update(
+    @Param('id') id: string,
+    @Body() updateUserDto: UpdateUserDto,
+    @Request() req: Request,
+  ) {
+    return this.usersService.update(id, updateUserDto, req);
   }
 
+  @UseGuards(AuthGuard)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(id);
+  remove(@Param('id') id: string, @Request() req: Request) {
+    return this.usersService.remove(id, req);
   }
 }
