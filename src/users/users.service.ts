@@ -1,4 +1,9 @@
-import { Injectable, UnauthorizedException, UseGuards } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+  UseGuards,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -30,8 +35,19 @@ export class UsersService {
     return await this.userModel.findOne({ _id: id }).select('-password -__v');
   }
 
-  update(id: string, updateUserDto: UpdateUserDto, req: any) {
-    return `This action updates a #${id} user`;
+  async update(id: string, updateUserDto: UpdateUserDto, req: any) {
+    if (id !== req.user.sub) {
+      throw new UnauthorizedException();
+    }
+
+    if (updateUserDto.password) {
+      throw new BadRequestException('You can only update email.');
+    }
+    return await this.userModel
+      .findByIdAndUpdate(id, updateUserDto, {
+        new: true,
+      })
+      .select('-__v');
   }
 
   async remove(id: string, req: any) {
