@@ -14,6 +14,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { AuthService } from '../auth/auth.service';
 import { AuthGuard } from '../auth/auth.guards';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('users')
 export class UsersController {
@@ -22,28 +23,33 @@ export class UsersController {
     private authService: AuthService,
   ) {}
 
+  @ApiTags('Auth')
   @Post('/register')
   create(@Body() createUserDto: CreateUserDto) {
     return this.authService.register(createUserDto);
   }
 
+  @ApiTags('Auth')
   @Post('/login')
   login(@Body() loginUserDto: CreateUserDto) {
     return this.authService.login(loginUserDto);
   }
 
+  @ApiTags('Users')
   @UseGuards(AuthGuard)
   @Get('/profile')
   async getProfile(@Request() req: any) {
     return await req.user;
   }
 
+  @ApiTags('Users')
   @UseGuards(AuthGuard)
   @Get()
   findAll(@Request() req: Request) {
     return this.usersService.findAll(req);
   }
 
+  @ApiTags('Users')
   @UseGuards(AuthGuard)
   @Patch(':id')
   update(
@@ -54,6 +60,7 @@ export class UsersController {
     return this.usersService.update(id, updateUserDto, req);
   }
 
+  @ApiTags('Users')
   @UseGuards(AuthGuard)
   @Delete(':id')
   remove(@Param('id') id: string, @Request() req: Request) {
