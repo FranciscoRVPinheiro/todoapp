@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
@@ -9,7 +10,6 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from 'src/schemas/user.schema';
 import { Model } from 'mongoose';
-import { AuthGuard } from 'src/auth/auth.guards';
 
 @Injectable()
 export class UsersService {
@@ -24,15 +24,22 @@ export class UsersService {
     return await this.userModel.findOne({ email }).select('-__v');
   }
 
-  async findAll() {
-    return await this.userModel.find().select('-password -__v');
-  }
+  async findAll(req: any) {
+    const user = await this.userModel
+      .findOne({ _id: req.user.sub })
+      .select('-__v');
 
-  async findOne(id: string, req: any) {
-    if (id !== req.user.sub) {
+    if (!user) {
+      throw new NotFoundException();
+    }
+
+    console.log(user);
+
+    if (user.role !== 'admin') {
       throw new UnauthorizedException();
     }
-    return await this.userModel.findOne({ _id: id }).select('-password -__v');
+
+    return await this.userModel.find().select('-password -__v');
   }
 
   async update(id: string, updateUserDto: UpdateUserDto, req: any) {

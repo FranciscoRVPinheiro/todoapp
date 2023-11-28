@@ -38,15 +38,10 @@ export class UsersController {
     return await req.user;
   }
 
-  @Get()
-  findAll() {
-    // Only admins should be able to see it
-    return this.usersService.findAll();
-  }
   @UseGuards(AuthGuard)
-  @Get(':id')
-  findOne(@Param('id') id: string, @Request() req: Request) {
-    return this.usersService.findOne(id, req);
+  @Get()
+  findAll(@Request() req: Request) {
+    return this.usersService.findAll(req);
   }
 
   @UseGuards(AuthGuard)

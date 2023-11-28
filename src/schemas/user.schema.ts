@@ -12,6 +12,9 @@ export class User {
   @Prop({ required: true })
   password: string;
 
+  @Prop()
+  role: string;
+
   // @Prop({ type: [{ type: Types.ObjectId, ref: 'Todo' }] })
   // todos: Todo[];
 }
