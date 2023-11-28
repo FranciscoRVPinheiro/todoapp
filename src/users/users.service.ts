@@ -3,7 +3,6 @@ import {
   Injectable,
   NotFoundException,
   UnauthorizedException,
-  UseGuards,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -32,8 +31,6 @@ export class UsersService {
     if (!user) {
       throw new NotFoundException();
     }
-
-    console.log(user);
 
     if (user.role !== 'admin') {
       throw new UnauthorizedException();
