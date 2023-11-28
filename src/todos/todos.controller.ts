@@ -13,7 +13,9 @@ import { TodosService } from './todos.service';
 import { CreateTodoDto } from './dto/create-todo.dto';
 import { UpdateTodoDto } from './dto/update-todo.dto';
 import { AuthGuard } from 'src/auth/auth.guards';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Todos')
 @UseGuards(AuthGuard)
 @Controller('todos')
 export class TodosController {
