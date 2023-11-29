@@ -2,7 +2,7 @@ import { IsString, Length, IsIn, IsOptional } from 'class-validator';
 
 export class CreateTodoDto {
   @IsString()
-  @Length(1, 50)
+  @Length(1, 200)
   title: string;
 
   @Length(0, 200)
